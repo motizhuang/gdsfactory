@@ -224,11 +224,11 @@ def _add_layer(entry, lys: LayerSet) -> Optional[LayerSet]:
         "color": entry["fill-color"],
         "dither": entry["dither-pattern"],
         "name": name,
-        # "name": _name_to_short_name(name),
+        "description": _name_to_description(name),
+        "alpha": alpha,
     }
 
-    settings["description"] = _name_to_description(name)
-    settings["alpha"] = alpha
+
     lys.add_layer(**settings)
     return lys
 
