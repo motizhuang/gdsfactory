@@ -122,10 +122,7 @@ class Component(Device):
         labels = libcopy.deepcopy(self.labels)
         if depth is None or depth > 0:
             for reference in self.references:
-                if depth is None:
-                    next_depth = None
-                else:
-                    next_depth = depth - 1
+                next_depth = None if depth is None else depth - 1
                 ref_labels = reference.get_labels(next_depth)
                 if reference.rotation:
                     for label in ref_labels:
