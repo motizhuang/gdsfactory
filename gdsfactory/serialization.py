@@ -111,4 +111,4 @@ if __name__ == "__main__":
     f = gf.partial(gf.c.straight, length=3)
     c = f()
     d = clean_value_json(c)
-    print(d, str(d))
+    print(d, d)
