@@ -11,26 +11,25 @@ from gdsfactory.component import Component
 def model_from_gdsfactory(
     component: Component, dirpath=gf.CONFIG["sparameters"], **kwargs
 ) -> Model:
-    """Return simphony model from gdsfactory Component Sparameters.
+    """Return simphony model from gdsfactory Component Sparameters
 
     Args:
-        component: component factory or instance
-        dirpath: sparameters directory
-        kwargs: settings
+        component: component factory or instance.
+        dirpath: sparameters directory.
+        kwargs: settings.
     """
     kwargs.pop("function_name", "")
     kwargs.pop("module", "")
     component = gf.call_if_func(component, **kwargs)
     pins, f, s = sim.read_sparameters_lumerical(component=component, dirpath=dirpath)
 
-    def interpolate_sp(freq):
-        return interpolate(freq, f, s)
+    def interpolate_sp(freqs):
+        return interpolate(freqs, f, s)
 
-    m = Model()
-    m.pins = pins
+    freq_range = (s[0][0], s[0][-1])
+    m = Model(freq_range=freq_range, pins=pins)
     m.s_params = (f, s)
     m.s_parameters = interpolate_sp
-    m.freq_range = (m.s_params[0][0], m.s_params[0][-1])
     m.wavelengths = speed_of_light / np.array(f)
     m.s = s
     return m

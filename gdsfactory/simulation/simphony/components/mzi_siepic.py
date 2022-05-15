@@ -5,16 +5,19 @@ from gdsfactory.simulation.simphony.components.mmi1x2 import mmi1x2
 
 
 def mzi(
-    L0=1, DL=100.0, L2=10.0, y_model_factory=mmi1x2, wg=siepic.Waveguide
-):
-    """Mzi circuit model.
+    L0: float = 1,
+    DL: float = 100.0,
+    L2: float = 10.0,
+    y_model_factory=mmi1x2,
+    wg=siepic.Waveguide,
+) -> Subcircuit:
+    """Returns Mzi circuit model.
 
     Args:
-        L0 (um): vertical length for both and top arms
-        DL (um): bottom arm extra length, delta_length = 2*DL
-        L2 (um): L_top horizontal length
+        L0: vertical length for both and top arms.
+        DL: bottom arm extra length, delta_length = 2*DL.
+        L2: L_top horizontal length.
 
-    Return: mzi circuit model
 
     .. code::
 
@@ -75,8 +78,8 @@ def mzi(
             ("recombiner", "E1", "wg_short", "n2"),
         ]
     )
-    circuit.elements["splitter"].pins["W0"] = "input"
-    circuit.elements["recombiner"].pins["W0"] = "output"
+    # circuit.elements["splitter"].pins["W0"] = "input"
+    # circuit.elements["recombiner"].pins["W0"] = "output"
     return circuit
 
 

@@ -17,8 +17,7 @@ def ring_double(
     coupler: ModelFactory = coupler_ring,
     straight: ModelFactory = straight_function,
 ) -> Subcircuit:
-    r"""Return double bus ring Model made of two couplers (ct: top, cb: bottom).
-
+    r"""Return double bus ring Model made of two couplers (ct: top, cb: bottom)
     connected with two vertical straights (yl: left, wr: right)
 
     .. code::
@@ -69,29 +68,31 @@ def ring_double(
         gs.plot_circuit(c)
     """
 
-
-    wg1 = straight(length=length_y) if callable(straight) else straight
-    wg2 = straight(length=length_y) if callable(straight) else straight
-    halfring1 = (
-
+    straight = straight(length=length_y) if callable(straight) else straight
+    coupler = (
         coupler(length_x=length_x, radius=radius, gap=gap, wg_width=wg_width)
         if callable(coupler)
         else coupler
     )
-    halfring2 = (
 
-        coupler(length_x=length_x, radius=radius, gap=gap, wg_width=wg_width)
-        if callable(coupler)
-        else coupler
+    # Create the circuit, add all individual instances
+    circuit = Subcircuit("ring_double")
+    circuit.add([(coupler, "ct"), (coupler, "cb"), (straight, "wl"), (straight, "wr")])
+
+    # Circuits can be connected using the elements' string names:
+    circuit.connect_many(
+        [
+            ("cb", "o2", "wl", "o1"),
+            ("wl", "o2", "ct", "o3"),
+            ("ct", "o2", "wr", "o2"),
+            ("wr", "o1", "cb", "o3"),
+        ]
     )
-    halfring1["o2"].connect(wg1["o1"])
-    halfring2["o3"].connect(wg1["o2"])
-    halfring1["o3"].connect(wg2["o1"])
-    halfring2["o2"].connect(wg2["o2"])
-    halfring2["o1"].rename("o2")
-    halfring2["o4"].rename("o3")
-
-    return halfring1.circuit.to_subcircuit()
+    circuit.elements["cb"].pins["o1"] = "o1"
+    circuit.elements["cb"].pins["o4"] = "o4"
+    circuit.elements["ct"].pins["o4"] = "o2"
+    circuit.elements["ct"].pins["o1"] = "o3"
+    return circuit
 
 
 if __name__ == "__main__":

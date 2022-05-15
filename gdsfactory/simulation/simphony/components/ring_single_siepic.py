@@ -1,5 +1,6 @@
 import numpy as np
 from simphony.libraries import siepic
+from simphony.models import Subcircuit
 
 from gdsfactory.simulation.simphony.components.coupler_ring import coupler_ring
 
@@ -13,7 +14,7 @@ def ring_single(
     coupler=coupler_ring,
     straight=siepic.Waveguide,
 ):
-    r"""Single bus ring made of a ring coupler (cb: bottom).
+    r"""Single bus ring made of a ring coupler (cb: bottom)
 
     .. code::
 
@@ -27,6 +28,7 @@ def ring_single(
 
 
     """
+
     length = np.pi * bend_radius + length_x + 2 * length_y
     straight = straight(length=length * 1e-6) if callable(straight) else straight
     coupler = (
@@ -35,19 +37,14 @@ def ring_single(
         else coupler
     )
 
-    cb = coupler
-    wt = straight
+    # Create the circuit, add all individual instances
+    circuit = Subcircuit("ring_double")
+    circuit.add([(coupler, "cb"), (straight, "wt")])
 
-    cb.rename_pins("W0", "N0", "N1", "E0")
-    wt.rename_pins("n1", "n2")
-
-    cb["N0"].connect(wt["n1"])
-    cb["N1"].connect(wt["n2"])
-
-    cb["W0"].rename("input")
-    cb["E0"].rename("output")
-
-    return cb.circuit.to_subcircuit()
+    circuit.connect_many([("cb", "N0", "wt", "n1"), ("wt", "n2", "cb", "N1")])
+    circuit.elements["cb"].pins["W0"] = "input"
+    circuit.elements["cb"].pins["E0"] = "output"
+    return circuit
 
 
 if __name__ == "__main__":
@@ -56,5 +53,5 @@ if __name__ == "__main__":
     from gdsfactory.simulation.simphony import plot_circuit
 
     c = ring_single(length_y=20)
-    plot_circuit(c, pin_in="input", pins_out=("output",))
+    plot_circuit(c)
     plt.show()

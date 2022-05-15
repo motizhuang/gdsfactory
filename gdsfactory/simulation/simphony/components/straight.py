@@ -1,3 +1,4 @@
+from simphony import Model
 from simphony.libraries.sipann import Waveguide
 
 from gdsfactory.config import logger
@@ -9,7 +10,7 @@ def straight(
     thickness: float = 0.22,
     sw_angle: float = 90.0,
     **kwargs,
-):
+) -> Model:
     """Return simphony Model for a Straight straight.
 
     Args:
@@ -25,7 +26,9 @@ def straight(
     thickness *= 1e-6
     length *= 1e-6
 
-    model = Waveguide(width=width, thickness=thickness, sw_angle=sw_angle, length=length)
+    model = Waveguide(
+        width=width, thickness=thickness, sw_angle=sw_angle, length=length
+    )
     model.rename_pins("o1", "o2")
     return model
 

@@ -13,8 +13,8 @@ def test_circuit_transmission(data_regression, check: bool = True):
     component = gf.components.mzi(delta_length=10)
     circuit = component_to_circuit(component)
 
-    for element in circuit._get_components():
-        print(element)
+    # for element in circuit._get_components():
+    #     print(element)
 
     circuit._get_components()[splitter].pins["o1"] = "o1"
     circuit._get_components()[combiner].pins["o1"] = "o2"

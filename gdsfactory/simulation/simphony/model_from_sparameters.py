@@ -33,14 +33,13 @@ def model_from_sparameters(
     f = wl2freq(wavelengths)
     s = sparameters
 
-    def interpolate_sp(freq):
-        return interpolate(freq, f, s)
+    def interpolate_sp(freqs):
+        return interpolate(freqs, f, s)
 
-    m = Model()
-    m.pins = pins
+    freq_range = (min(f), max(f))
+    m = Model(freq_range=freq_range, pins=pins)
     m.s_params = (f, s)
     m.s_parameters = interpolate_sp
-    m.freq_range = (min(f), max(f))
     m.wavelength_range = (min(wavelengths), max(wavelengths))
     m.wavelengths = speed_of_light / np.array(f)
     m.s = s

@@ -15,9 +15,8 @@ def ring_single(
     coupler=coupler_ring,
     straight=straight,
     bend=bend_circular,
-) -> Subcircuit:
-    r"""Return single bus ring Model made of a ring coupler (cb: bottom).
-
+):
+    r"""Return single bus ring Model made of a ring coupler (cb: bottom)
     connected with:
     - 2 vertical straights (wl: left, wr: right)
     - 2 bend90 straights (bl: left, br: right)
@@ -63,6 +62,7 @@ def ring_single(
         c = gc.ring_single()
         gs.plot_circuit(c)
     """
+
     straight = (
         straight(width=wg_width, length=length_y) if callable(straight) else straight
     )
@@ -72,18 +72,39 @@ def ring_single(
         if callable(coupler)
         else coupler
     )
-    wg1 = straight
-    wg2 = straight
-    bend.connect(wg1)
-    bend.connect(wg2)
-    coupler.multiconnect(wg1["o2"], wg2["o2"])
 
-    return coupler.circuit.to_subcircuit()
+    # Create the circuit, add all individual instances
+    circuit = Subcircuit("ring_double")
+    circuit.add(
+        [
+            (bend, "bl"),
+            (bend, "br"),
+            (coupler, "cb"),
+            (straight, "wl"),
+            (straight, "wr"),
+            (straight, "wt"),
+        ]
+    )
+
+    # Circuits can be connected using the elements' string names:
+    circuit.connect_many(
+        [
+            ("cb", "o2", "wl", "o2"),
+            ("wl", "o1", "bl", "o2"),
+            ("bl", "o1", "wt", "o1"),
+            ("wt", "o2", "br", "o1"),
+            ("br", "o2", "wr", "o2"),
+            ("wr", "o1", "cb", "o3"),
+        ]
+    )
+    circuit.elements["cb"].pins["o1"] = "o1"
+    circuit.elements["cb"].pins["o4"] = "o2"
+    return circuit
 
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     c = ring_single()
-    plot_circuit(c, pins_out=("o4",))
+    plot_circuit(c)
     plt.show()

@@ -1,4 +1,5 @@
 import numpy as np
+from simphony import Model
 from simphony.libraries.sipann import Waveguide
 
 
@@ -9,18 +10,18 @@ def bend_circular(
     angle: float = 90.0,
     sw_angle: float = 90.0,
     **kwargs,
-):
+) -> Model:
     """Return simphony Model for a bend using a straight.
 
     FIXME. this is fake bend! need to create a better model
 
     Args:
         radius: Radius of straight in microns.
-        width: Width of the straights in microns
-        thickness: Thickness of the straights in microns
-        angle: Number of deg of circle that bent straight transverses
+        width: Width of the straights in microns.
+        thickness: Thickness of the straights in microns.
+        angle: Number of deg of circle that bent straight transverses.
         sw_angle: Sidewall angle from horizontal in degrees. Defaults to 90.
-        kwargs: geometrical args that this model ignores
+        kwargs: geometrical args that this model ignores.
 
     """
     angle = np.deg2rad(angle)
@@ -28,7 +29,9 @@ def bend_circular(
     thickness *= 1e-6
     length = angle * radius * 1e-6
 
-    model = Waveguide(width=width, thickness=thickness, sw_angle=sw_angle, length=length)
+    model = Waveguide(
+        width=width, thickness=thickness, sw_angle=sw_angle, length=length
+    )
     model.rename_pins("o1", "o2")
     return model
 

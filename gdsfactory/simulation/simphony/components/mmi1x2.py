@@ -6,13 +6,13 @@ def mmi1x2(**kwargs):
     r"""Return 1x2 MultiModeInterferometer Sparameter model.
 
     Keyword Args:
-        width: input and output straight width
-        width_taper: interface between input straights and mmi region
-        length_taper: into the mmi region
-        length_mmi: in x direction
-        width_mmi: in y direction
-        gap_mmi:  gap between tapered wg
-        taper: taper function
+        width: input and output straight width.
+        width_taper: interface between input straights and mmi region.
+        length_taper: into the mmi region.
+        length_mmi: in x direction.
+        width_mmi: in y direction.
+        gap_mmi:  gap between tapered wg.
+        taper: taper function.
         layer:
         layers_cladding:
         cladding_offset

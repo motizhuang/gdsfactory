@@ -1,3 +1,4 @@
+from simphony import Model
 from simphony.libraries.sipann import Standard
 
 
@@ -10,7 +11,7 @@ def coupler(
     dx: float = 1.5,
     dy: float = 5.0,
     **kwargs,
-):
+) -> Model:
     r"""Return simphony Directional coupler model.
 
     Args:
@@ -65,7 +66,6 @@ def coupler(
     length *= 1e3
     H = dx * 1e3
     V = dy * 1e3 / 2
-
 
     model = Standard(
         width=width,

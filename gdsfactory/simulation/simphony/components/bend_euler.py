@@ -25,13 +25,15 @@ def bend_euler(
         kwargs: geometrical args that this model ignores
 
     """
-    c = gf.c.bend_euler(radius=radius, angle=angle)
+    c = gf.components.bend_euler(radius=radius, angle=angle)
     length = c.info["length"] * 1e-6
     angle = np.deg2rad(angle)
     width *= 1e-6
     thickness *= 1e-6
 
-    model = Waveguide(width=width, thickness=thickness, sw_angle=sw_angle, length=length)
+    model = Waveguide(
+        width=width, thickness=thickness, sw_angle=sw_angle, length=length
+    )
     model.rename_pins("o1", "o2")
     return model
 
