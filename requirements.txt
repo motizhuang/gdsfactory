@@ -8,7 +8,7 @@ loguru
 lytest==0.0.20
 matplotlib
 networkx
-numpy<=1.21
+numpy==1.21
 omegaconf
 orjson
 pandas
