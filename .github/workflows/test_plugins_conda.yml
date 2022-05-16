@@ -38,5 +38,4 @@ jobs:
           mkdir -p $HOME/.tidy3d
           echo ${{ secrets.TIDY3D_AUTH }} > $HOME/.tidy3d/auth.json
           make meep
-          pip install numpy==1.21.6
           make test-plugins
