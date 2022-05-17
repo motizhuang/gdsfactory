@@ -2,12 +2,12 @@ from typing import Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
-from simphony.layout import Circuit
+from simphony.models import Subcircuit
 from simphony.simulators import SweepSimulator
 
 
 def plot_circuit(
-    circuit: Circuit,
+    circuit: Subcircuit,
     pin_in: str = "o1",
     pins_out: Tuple[str, ...] = ("o2",),
     start: float = 1500e-9,
@@ -40,8 +40,8 @@ def plot_circuit(
     simulation = SweepSimulator(start, stop, num)
     simulation.circuit = circuit
 
-    for p in pins_out:
-        simulation.multiconnect(circuit.pins[0], circuit.pins[p])
+    for pin_out in pins_out:
+        simulation[pin_in].connect(circuit[pin_out])
         wl, s = simulation.simulate()
         wl *= 1e9
 

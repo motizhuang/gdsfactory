@@ -1,4 +1,4 @@
-from simphony.models import Subcircuit
+from simphony.models import Model
 
 from gdsfactory.simulation.simphony.components.bend_circular import bend_circular
 from gdsfactory.simulation.simphony.components.coupler_ring import coupler_ring
@@ -74,7 +74,10 @@ def ring_single(
     )
 
     # Create the circuit, add all individual instances
-    circuit = Subcircuit("ring_double")
+
+    coupler["o2"].connect()
+
+    circuit = Model()
     circuit.add(
         [
             (bend, "bl"),

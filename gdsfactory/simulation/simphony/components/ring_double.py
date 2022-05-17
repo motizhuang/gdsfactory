@@ -10,7 +10,8 @@ from gdsfactory.simulation.simphony.types import ModelFactory
 
 def ring_double(
     wg_width: float = 0.5,
-    gap: float = 0.2,
+    gap1: float = 0.2,
+    gap2: float = 0.2,
     length_x: float = 4,
     radius: float = 5,
     length_y: float = 2,
@@ -34,7 +35,7 @@ def ring_double(
            ---=========---
         o2    length_x    o3
              /         \
-            /           \
+            /           \    halfring2
            |             |
            o3           o2 ___
                             |
@@ -42,7 +43,7 @@ def ring_double(
                            _|_
            o2            o3
            |             |
-            \           /
+            \           /    halfring1
              \         /
            ---=========---
         o1    length_x    o4
@@ -69,30 +70,27 @@ def ring_double(
     """
 
     straight = straight(length=length_y) if callable(straight) else straight
-    coupler = (
-        coupler(length_x=length_x, radius=radius, gap=gap, wg_width=wg_width)
+    halfring1 = (
+        coupler(length_x=length_x, radius=radius, gap=gap1, wg_width=wg_width)
         if callable(coupler)
         else coupler
     )
-
-    # Create the circuit, add all individual instances
-    circuit = Subcircuit("ring_double")
-    circuit.add([(coupler, "ct"), (coupler, "cb"), (straight, "wl"), (straight, "wr")])
-
-    # Circuits can be connected using the elements' string names:
-    circuit.connect_many(
-        [
-            ("cb", "o2", "wl", "o1"),
-            ("wl", "o2", "ct", "o3"),
-            ("ct", "o2", "wr", "o2"),
-            ("wr", "o1", "cb", "o3"),
-        ]
+    halfring2 = (
+        coupler(length_x=length_x, radius=radius, gap=gap2, wg_width=wg_width)
+        if callable(coupler)
+        else coupler
     )
-    circuit.elements["cb"].pins["o1"] = "o1"
-    circuit.elements["cb"].pins["o4"] = "o4"
-    circuit.elements["ct"].pins["o4"] = "o2"
-    circuit.elements["ct"].pins["o1"] = "o3"
-    return circuit
+    halfring1.rename_pins("o1", "o2c", "o3c", "o4")
+    halfring2.rename_pins("o3", "o2c", "o3c", "o2")
+
+    # the interface method will connect all of the pins with matching names
+    # between the two components together
+    # halfring1.interface(halfring2)
+    halfring1["o2c"].connect(halfring2["o3c"])
+    halfring1["o3c"].connect(halfring2["o2c"])
+
+    # bundling the circuit as a Subcircuit allows us to interact with it as if it were a component
+    return halfring1.circuit.to_subcircuit()
 
 
 if __name__ == "__main__":
