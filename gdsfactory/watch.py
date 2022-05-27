@@ -86,7 +86,7 @@ class YamlEventHandler(FileSystemEventHandler):
             c = from_yaml(filepath)
             self.update_cell(filepath, update=True)
             return c
-        except (ValueError, KeyError, Exception) as e:
+        except Exception as e:
             traceback.print_exc(file=sys.stdout)
             print(e)
 
